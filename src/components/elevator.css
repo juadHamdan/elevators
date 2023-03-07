@@ -1,0 +1,28 @@
+:root{
+    --elevator-icon-height: 50px;
+    --elevator-icon-width: var(var(--elevator-icon-height));
+}
+
+.elevator-container{
+}
+
+.elevator-container .floor{
+    border: 0.5px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.elevator-icon{
+    height: var(--elevator-icon-height);
+    width: var(--elevator-icon-width);
+    transition: transform;
+    transition-timing-function: ease-in-out;
+}
+
+.elevator-container{
+}
+
+.elevator-container:hover .elevator-icon{
+    
+}
