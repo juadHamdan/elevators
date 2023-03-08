@@ -1,6 +1,8 @@
 import './elevator.css'
 import { useState, useEffect } from 'react'
+import useSound from 'use-sound';
 import { ReactComponent as ElevatorIcon } from './sources/elevator-icon.svg'
+import ElevatorPingSound from './sources/elevator-ping.mp3'
 
 const initialFloor = 0
 const floorWidthInPx = 140
@@ -22,9 +24,9 @@ const Elevator = ({
 }) => {
     const [currentFloor, setCurrentFloor] = useState(initialFloor)
     const [elevetorIconColor, setElevetorIconColor] = useState(ElevatorStatusColor.Default)
-
     const [travelHeightInPx, setTravelHeightInPx] = useState('0px')
     const [travelDuration, setTravelDuration] = useState(0)
+    const [playElevatorSound] = useSound(ElevatorPingSound)
 
     const floorStyle = {
         width: `${floorWidthInPx - 2}px`,
@@ -45,15 +47,23 @@ const Elevator = ({
         transitionDuration: `${travelDuration}s`
     }
 
+    function getTimeStrFromMillSec(timeInMillSec){
+        let seconds = Math.floor(timeInMillSec / 1000);
+        let minutes = Math.floor(seconds / 60);
+        return minutes === 0 ? `${seconds % 100} sec.` : `${minutes} min, ${seconds % 100} sec.`
+    }
+
     useEffect(() => {
         const hasElevatorCalled = desiredFloor !== currentFloor
         if (hasElevatorCalled) {
-            console.log("desiredFloor:", desiredFloor, "currentFloor:", currentFloor)
+
             const floorsToTravel = desiredFloor - currentFloor
+
+            var startTime = new Date().getTime();
             setTravelHeightInPx(getTravelHeightInPx(floorsToTravel))
             setTravelDuration(getTransitionDurationInSec(floorsToTravel))
             setElevetorIconColor(ElevatorStatusColor.Traveling)
-            onTraveling()
+            onTraveling(desiredFloor)
             setTimeout(() => {
                 setTravelHeightInPx('0px')
                 setTravelDuration(0)
@@ -61,15 +71,32 @@ const Elevator = ({
 
                 setCurrentFloor(desiredFloor)
                 onArrival(desiredFloor)
+                var endTime = new Date().getTime();
+                var timeInMillSec = endTime - startTime;
+                //getTimeStrFromMillSec(timeInMillSec)
+
+
+                playElevatorSound()
                 setTimeout(() => {
                     setElevetorIconColor(ElevatorStatusColor.Default)
                 }, timeoutOnArrival)
             }, Math.abs(floorsToTravel) * (floorTravelSpeedInSec * 1000))
         }
+        else{
+            setElevetorIconColor(ElevatorStatusColor.Arrived)
+            onArrival(desiredFloor)
+
+            setTimeout(() => {
+                setElevetorIconColor(ElevatorStatusColor.Default)
+            }, timeoutOnArrival)
+        }
     }, [desiredFloor])
 
+
+
+
     return (
-        <div className="elevator-container">
+        <div>
             {[...Array(numOfFloors).keys()].reverse().map(index =>
                 <div key={index} className="floor" style={floorStyle}>
                     {index === currentFloor ?

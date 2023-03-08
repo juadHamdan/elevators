@@ -1,11 +1,18 @@
-.App {
-  height: 100vh;
+body{
   text-align: center;
+  height: 100vh;
+  font-family: "Calibri", sans-serif;
+  background-color: #f5f5f5;
+}
+
+.elevators-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Calibri", sans-serif;
-  background-color: #f5f5f5;
+}
+
+.elevators-header{
+  margin: 75px 0;
 }
 
 .elevators-labels{

@@ -3,7 +3,7 @@
     --elevator-icon-width: var(var(--elevator-icon-height));
 }
 
-.elevator-container .floor{
+.floor{
     background-color: white;
     display: flex;
     align-items: center;
