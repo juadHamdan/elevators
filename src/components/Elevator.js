@@ -1,12 +1,11 @@
 import './elevator.css'
 import { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import {ReactComponent as ElevatorIcon} from './sources/elevator-icon.svg'
+import { ReactComponent as ElevatorIcon } from './sources/elevator-icon.svg'
 
 const initialFloor = 0
 const floorWidthInPx = 140
 const floorHeightInPx = 75
-const floorTravelSpeedInSec = 5
+const floorTravelSpeedInSec = 1
 
 const ElevatorStatusColor = {
     Arrived: "#66bb6a",
@@ -22,58 +21,43 @@ const Elevator = ({
     timeoutOnArrival
 }) => {
     const [currentFloor, setCurrentFloor] = useState(initialFloor)
-    const [floorsToTravel, setFloorsToTravel] = useState(0)
     const [elevetorIconColor, setElevetorIconColor] = useState(ElevatorStatusColor.Default)
-    const [startAnimation, setStartAnimation] = useState(false)
+
+    const [travelHeightInPx, setTravelHeightInPx] = useState('0px')
+    const [travelDuration, setTravelDuration] = useState(0)
 
     const floorStyle = {
-        width: `${floorWidthInPx - 1}px`,
-        height: `${floorHeightInPx - 1}px`,
+        width: `${floorWidthInPx - 2}px`,
+        height: `${floorHeightInPx - 2}px`,
         border: "1px solid #f5f5f5"
     }
 
-    function getTravelHeightInPx(){
+    function getTravelHeightInPx(floorsToTravel) {
         return `${-(floorsToTravel * floorHeightInPx)}px`
     }
 
-    function getTransitionDurationInSec(){
+    function getTransitionDurationInSec(floorsToTravel) {
         return Math.abs(floorsToTravel * floorTravelSpeedInSec)
     }
 
-    function getElevatorIconAnimationStyle(){
-        if(startAnimation){
-            return {
-                transform: `translateY(${getTravelHeightInPx()})`,
-                transitionDuration: `${getTransitionDurationInSec()}s`}
-        }
-        return{
-            transform: `translateY(0)`,
-            transitionDuration: `0s`
-            }
+    const elevatorIconAnimationStyle = {
+        transform: `translateY(${travelHeightInPx})`,
+        transitionDuration: `${travelDuration}s`
     }
 
     useEffect(() => {
         const hasElevatorCalled = desiredFloor !== currentFloor
-        if(hasElevatorCalled){
+        if (hasElevatorCalled) {
             console.log("desiredFloor:", desiredFloor, "currentFloor:", currentFloor)
-            setFloorsToTravel(desiredFloor - currentFloor)
-
-
-            ////
-            setStartAnimation(true)
-
-
-
+            const floorsToTravel = desiredFloor - currentFloor
+            setTravelHeightInPx(getTravelHeightInPx(floorsToTravel))
+            setTravelDuration(getTransitionDurationInSec(floorsToTravel))
             setElevetorIconColor(ElevatorStatusColor.Traveling)
             onTraveling()
             setTimeout(() => {
+                setTravelHeightInPx('0px')
+                setTravelDuration(0)
                 setElevetorIconColor(ElevatorStatusColor.Arrived)
-
-
-                ///
-                setStartAnimation(false)
-
-
 
                 setCurrentFloor(desiredFloor)
                 onArrival(desiredFloor)
@@ -84,17 +68,17 @@ const Elevator = ({
         }
     }, [desiredFloor])
 
-    return(
+    return (
         <div className="elevator-container">
-            {[...Array(numOfFloors).keys()].reverse().map(index => 
+            {[...Array(numOfFloors).keys()].reverse().map(index =>
                 <div key={index} className="floor" style={floorStyle}>
                     {index === currentFloor ?
-                        <ElevatorIcon 
-                            stroke={elevetorIconColor} 
-                            className="elevator-icon" 
-                            style={getElevatorIconAnimationStyle()}
+                        <ElevatorIcon
+                            stroke={elevetorIconColor}
+                            className="elevator-icon"
+                            style={elevatorIconAnimationStyle}
                         />
-                    :  null}
+                        : null}
                 </div>
             )}
         </div>

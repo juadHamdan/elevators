@@ -3,9 +3,6 @@
     --elevator-icon-width: var(var(--elevator-icon-height));
 }
 
-.elevator-container{
-}
-
 .elevator-container .floor{
     background-color: white;
     display: flex;
@@ -16,10 +13,6 @@
 .elevator-icon{
     height: var(--elevator-icon-height);
     width: var(--elevator-icon-width);
+    transition: transform;
     transition-timing-function: ease-in-out;
-}
-
-
-.elevator-container:hover .elevator-icon{
-    
 }
