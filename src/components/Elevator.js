@@ -4,10 +4,7 @@ import useSound from 'use-sound';
 import { ReactComponent as ElevatorIcon } from './sources/elevator-icon.svg'
 import ElevatorPingSound from './sources/elevator-ping.mp3'
 
-import {elevatorTravelSpeedPerFloorInSec} from '../constants'
-
-const initialFloor = 0
-const floorHeightInPx = 75
+import {initialElevatorsFloor, floorHeightInPx, elevatorTravelSpeedPerFloorInSec} from '../constants'
 
 const ElevatorStatusColor = {
     Arrived: "#66bb6a",
@@ -22,7 +19,7 @@ const Elevator = ({
     onArrival,
     timeoutOnArrival
 }) => {
-    const [currentFloor, setCurrentFloor] = useState(initialFloor)
+    const [currentFloor, setCurrentFloor] = useState(initialElevatorsFloor)
     const [elevetorIconColor, setElevetorIconColor] = useState(ElevatorStatusColor.Default)
     const [travelHeight, setTravelHeight] = useState('0px')
     const [timingContainerHeight, setTimingContainerHeight] = useState('0px')
@@ -96,18 +93,13 @@ const Elevator = ({
             setTimeout(() => {
                 handleElevatorArrival(desiredFloor)
                 clearInterval(travevlTimeCounterInterval)
-                //var endTime = new Date().getTime();
-                //var timeInMillSec = endTime - startTime;
-                //setTravelTimeCounterStr(getTimeStrFromMillSec(timeInMillSec))
-
                 setTimeout(() => {
                     setElevetorIconColor(ElevatorStatusColor.Default)
                 }, timeoutOnArrival)
             }, Math.abs(floorsToTravel) * (elevatorTravelSpeedPerFloorInSec * 1000))
         }
         else{
-            setElevetorIconColor(ElevatorStatusColor.Arrived)
-            onArrival(currentFloor)
+            handleElevatorArrival(desiredFloor)
 
             setTimeout(() => {
                 setElevetorIconColor(ElevatorStatusColor.Default)

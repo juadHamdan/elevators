@@ -1,49 +1,50 @@
 import './App.css';
-import { useState, useEffect } from 'react'
+import {useState} from 'react'
 import HandleQueue from './HandleQueue'
-import HandleElevatorsLocations from './HandleElevatorsLocations';
+import HandleElevators from './HandleElevators';
+import HandleBtnsClassNames from './HandleBtnsClassNames';
 
 import Elevator from './components/Elevator';
 import FloorsLabels from './components/FloorsLabels';
 import ElevatorsController from './components/ElevatorsController';
-import HandleBtnsClassNames from './HandleBtnsClassNames';
+import ElevatorsForm from './components/ElevatorsForm';
 
-import { ARRIVAL_TIMEOUT } from './constants'
-
-const NUM_OF_FLOORS = 10
-const NUM_OF_ELEVATORS = 5
-const ElevatorBtnClassNames = {
-  Arrived: "btn-active",
-  Traveling: "btn-disabled",
-  Default: "btn-default"
-}
+import { ARRIVAL_TIMEOUT, ElevatorStatuses } from './constants'
+import {initialNumOfFloors, initialNumOfElevators} from './constants'
 
 function App() {
+  const [numOfFloors, setNumOfFloors] = useState(initialNumOfFloors)
+  const [numOfElevators, setNumOfElevators] = useState(initialNumOfElevators)
   const { addToQueue, removeFromQueue } = HandleQueue()
-  const { elevatorsLocations, updateElevatorLocation, identifyClosestElevator } = HandleElevatorsLocations()
+  const { getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator } = HandleElevators()
   const { btnsClassNames, setBtnClassName }  = HandleBtnsClassNames()
 
 
   function onElevatorReady(elevatorNum, floorNum) {
-    setBtnClassName(floorNum, ElevatorBtnClassNames.Default)
-    updateElevatorLocation(elevatorNum, floorNum)
+    setBtnClassName(floorNum, ElevatorStatuses.Default)
+    updateFloorNumOFElevator(elevatorNum, floorNum)
+    updateElevatorOccupation(elevatorNum, false)
     removeFromQueue()
   }
 
-  //elevatorNum => elevatorIndex
   function onElevatorArrival(elevatorNum, floorNum) {
-    setBtnClassName(floorNum, ElevatorBtnClassNames.Arrived)
+    setBtnClassName(floorNum, ElevatorStatuses.Arrived)
 
     setTimeout(() => {
       onElevatorReady(elevatorNum, floorNum)
     }, ARRIVAL_TIMEOUT)
   }
 
-
-
   function onCall(floorNum) {
     addToQueue(floorNum)
-    updateElevatorLocation(identifyClosestElevator(floorNum), floorNum)
+
+    const elevatorNum = identifyClosestFreeElevator(floorNum)
+    if(elevatorNum == null){
+      //addToQueue
+      return
+    }
+    updateFloorNumOFElevator(elevatorNum, floorNum)
+    updateElevatorOccupation(elevatorNum, true)
   }
 
   return (
@@ -53,26 +54,29 @@ function App() {
       </h1>
 
       <div className="elevators-container">
-        <FloorsLabels numOfFloors={NUM_OF_FLOORS} />
+        <FloorsLabels numOfFloors={numOfFloors} />
 
-        {[...Array(NUM_OF_ELEVATORS).keys()].map(elevatorNum =>
+        {[...Array(numOfElevators).keys()].map(elevatorNum =>
           <Elevator
             key={elevatorNum}
-            numOfFloors={NUM_OF_FLOORS}
-            desiredFloor={elevatorsLocations.get(elevatorNum)}
+            numOfFloors={numOfFloors}
+            desiredFloor={getFloorNumOfElevator(elevatorNum)}
             onArrival={(floorNum) => onElevatorArrival(elevatorNum, floorNum)}
-            onTraveling={(floorNum) => setBtnClassName(floorNum, ElevatorBtnClassNames.Traveling)}
+            onTraveling={(floorNum) => setBtnClassName(floorNum, ElevatorStatuses.Traveling)}
             timeoutOnArrival={ARRIVAL_TIMEOUT}
           />
         )}
 
         <ElevatorsController
-          numOfFloors={NUM_OF_FLOORS}
+          numOfFloors={numOfFloors}
           onFloorChosen={(floorChosen) => onCall(floorChosen)}
           btnsClassNames={btnsClassNames}
         />
-
       </div>
+
+      <ElevatorsForm
+      onChangeNumOfFloors={(newNumOfFloors) => setNumOfFloors(newNumOfFloors)}
+      onChangeNumOfElevators={() => {}}/>
     </div>
   );
 }
