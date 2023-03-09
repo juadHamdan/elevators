@@ -1,6 +1,6 @@
 :root{
-    --elevator-icon-height: 35px;
-    --elevator-icon-width: var(var(--elevator-icon-height));
+    --elevator-icon-height: 50%;
+    --elevator-icon-width: var(--elevator-icon-height);
 }
 
 .floor{
@@ -15,4 +15,17 @@
     width: var(--elevator-icon-width);
     transition: transform;
     transition-timing-function: ease-in-out;
+}
+
+.elevator-container{
+    position: relative;
+}
+
+.timing-container{
+    font-size: 1.25rem;
+    font-weight: bold;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    width: 100%;
 }
