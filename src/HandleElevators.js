@@ -17,6 +17,18 @@ for (let i = 0; i < initialNumOfElevators; i++) {
 const HandleElevators = () => {
     const [elevators, setElevators] = useState(initialElevators)
 
+    function isSomeElevatorInFloor(floorNum){
+        let isInFloor = false
+        
+        elevators.forEach(elevator => {
+            if(elevator.floorNum === floorNum){
+                isInFloor = true
+            }
+        })
+    
+        return isInFloor
+    }
+
     function updateElevatorOccupation(elevatorIndex, isOccupied){
         const newElevators = [...elevators]
         newElevators[elevatorIndex].isOccupied = isOccupied
@@ -49,7 +61,7 @@ const HandleElevators = () => {
         return closestElevatorNum
     }
 
-    return { elevators, getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator }
+    return { elevators, getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator, isSomeElevatorInFloor }
 }
 
 export default HandleElevators

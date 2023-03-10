@@ -4,15 +4,15 @@ const HandleQueue = () => {
     const [callsQueue, setCallsQueue] = useState([])
 
     function pushToQueue(floorNum){
-        console.log("Queue:", [...callsQueue, floorNum])
+        //console.log("Queue:", [...callsQueue, floorNum])
         setCallsQueue(callsQueue => [...callsQueue, floorNum])
       }
     
       function shiftFromQueue(){
-        console.log("Queue:", callsQueue)
-        //setCallsQueue(newQueue)
-        setCallsQueue(callsQueue => callsQueue.splice(0, 1))
-        return callsQueue[0]
+        let firstCall = callsQueue[0]
+        console.log("Removed:", firstCall, "Queue:", callsQueue.slice(1))
+        setCallsQueue(callsQueue => callsQueue.slice(1))
+        return firstCall
       }
 
     return { callsQueue, pushToQueue, shiftFromQueue }

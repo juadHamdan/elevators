@@ -13,20 +13,19 @@ import { ARRIVAL_TIMEOUT, ElevatorStatuses } from './constants'
 import { initialNumOfFloors, initialNumOfElevators } from './constants'
 
 function App() {
+  const [queueIsHandledFlag, setQueueIsHandledFlag] = useState(false)
   const [numOfFloors, setNumOfFloors] = useState(initialNumOfFloors)
   const [numOfElevators, setNumOfElevators] = useState(initialNumOfElevators)
   const { callsQueue, pushToQueue, shiftFromQueue } = HandleQueue()
-  const { getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator } = HandleElevators()
+  const { getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator, isSomeElevatorInFloor } = HandleElevators()
   const { btnsClassNames, setBtnClassName } = HandleBtnsClassNames()
   const [callsCounter, setCallsCounter] = useState(0)
-
 
   function onElevatorReady(elevatorNum, floorNum) {
     updateFloorNumOFElevator(elevatorNum, floorNum)
     updateElevatorOccupation(elevatorNum, false)
     setBtnClassName(floorNum, ElevatorStatuses.Default)
 
-    shiftFromQueue()
     setCallsCounter(callsCounter => callsCounter - 1)
   }
 
@@ -39,15 +38,22 @@ function App() {
   }
 
   function onCall(floorNum) {
-    pushToQueue(floorNum)
-    //doesn't update !!!!!!!!!!
+    if(isSomeElevatorInFloor(floorNum)){
+      setBtnClassName(floorNum, ElevatorStatuses.Arrived)
+      setTimeout(() => {
+        setBtnClassName(floorNum, ElevatorStatuses.Default)
+      }, ARRIVAL_TIMEOUT)
+      return
+    }
+    
     let elevatorNum = identifyClosestFreeElevator(floorNum)
     if (elevatorNum == null) {
       if(callsQueue.find(floor => floor === floorNum)){
-        console.log("Push error")
+        console.log("Pushed twice")
         return
       }
       pushToQueue(floorNum)
+      setBtnClassName(floorNum, ElevatorStatuses.Traveling)
       return
     }
 
@@ -57,57 +63,61 @@ function App() {
   }
 
 /*
+  var queueInterval = null
   useEffect(() => {
-    var queueInterval = null
-    //var callsQueueLen = callsQueue.length
-
+    //console.log("Render")
     function tryToCallAvailableElevator() {
-      console.log("callsQueue:", callsQueue)
-
+      //callCounter 
+      console.log("callsCounter:", callsCounter)
       if (callsCounter < numOfElevators) {
-        //implement calls queue length here
-
         const queueFloor = shiftFromQueue()
         
-        if (callsQueue === 0) {
+        if (queueInterval != null && callsQueue.length === 0) {
           console.log("CLEAR INTERVAL")
+          //const queueFloor = shiftFromQueue()
+          //console.log(queueFloor)
+          //onCall(queueFloor)
           clearInterval(queueInterval)
         }
         
-        //console.log(callsQueue, callsQueue.length)
-
+        console.log(queueFloor)
         onCall(queueFloor)
       }
     }
 
-    if (callsQueue.length > 0) {
-      //implement on all floors choden
-      setBtnClassName(callsQueue[0], ElevatorStatuses.Traveling)
-
+    if (!queueIsHandledFlag && callsQueue.length > 0) {
+      setQueueIsHandledFlag(true)
+      //console.log("Change in callsQueue:", callsQueue.length)
+      
       queueInterval = setInterval(() => {
-        tryToCallAvailableElevator(callsQueue.length)
-      }, 1000)
-
-      //console.log("outside of setInterval")
+        console.log("INTERVAL")
+        tryToCallAvailableElevator()
+      }, 5000)
     }
-
-    /*
-    console.log("callsQueue.length:", callsQueue.length)
     if(callsQueue.length === 0){
-      console.log("CLEAR INTERVAL")
+      setQueueIsHandledFlag(false)
+      console.log("CLEAR")
       clearInterval(queueInterval)
     }
+
+  }, [callsCounter, callsQueue, queueIsHandledFlag])
 */
+  var queueInterval
+  const tryToCallAvailableElevator = () => {
+    queueInterval = setInterval(() => {
+      /*if(callsQueue.length === 1){
+        onCall(shiftFromQueue())
+      }*/
+      if (callsQueue.length > 0 && callsCounter < numOfElevators) onCall(shiftFromQueue())
+      if(callsQueue.length === 0) clearInterval(queueInterval)
+    }, 1000)
+  }
 
-    /*
-    if(queueInterval != null && callsQueue.length === 0){
-      console.log("!!!!!!!!!!!!!!!!!!!!")
-      clearInterval(queueInterval)
-    }
-    
-
+  useEffect(() => {
+    if(callsQueue.length > 0) tryToCallAvailableElevator()
+    else clearInterval(queueInterval)
+    return () => clearInterval(queueInterval)
   }, [callsQueue, callsCounter])
-*/
 
   return (
     <div>
