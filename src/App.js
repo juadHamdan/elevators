@@ -1,30 +1,32 @@
 import './App.css';
-import {useState} from 'react'
+import { useState, useEffect } from 'react'
 import HandleQueue from './HandleQueue'
 import HandleElevators from './HandleElevators';
 import HandleBtnsClassNames from './HandleBtnsClassNames';
 
-import Elevator from './components/Elevator';
+import Elevator from './components/elevator/Elevator';
 import FloorsLabels from './components/FloorsLabels';
 import ElevatorsController from './components/ElevatorsController';
 import ElevatorsForm from './components/ElevatorsForm';
 
 import { ARRIVAL_TIMEOUT, ElevatorStatuses } from './constants'
-import {initialNumOfFloors, initialNumOfElevators} from './constants'
+import { initialNumOfFloors, initialNumOfElevators } from './constants'
 
 function App() {
   const [numOfFloors, setNumOfFloors] = useState(initialNumOfFloors)
   const [numOfElevators, setNumOfElevators] = useState(initialNumOfElevators)
-  const { addToQueue, removeFromQueue } = HandleQueue()
+  const { callsQueue, pushToQueue, shiftFromQueue } = HandleQueue()
   const { getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator } = HandleElevators()
-  const { btnsClassNames, setBtnClassName }  = HandleBtnsClassNames()
+  const { btnsClassNames, setBtnClassName } = HandleBtnsClassNames()
+  const [callsCounter, setCallsCounter] = useState(0)
 
 
   function onElevatorReady(elevatorNum, floorNum) {
-    setBtnClassName(floorNum, ElevatorStatuses.Default)
     updateFloorNumOFElevator(elevatorNum, floorNum)
     updateElevatorOccupation(elevatorNum, false)
-    removeFromQueue()
+    setBtnClassName(floorNum, ElevatorStatuses.Default)
+    //shiftFromQueue()
+    setCallsCounter(callsCounter => callsCounter - 1)
   }
 
   function onElevatorArrival(elevatorNum, floorNum) {
@@ -36,16 +38,68 @@ function App() {
   }
 
   function onCall(floorNum) {
-    addToQueue(floorNum)
+    //pushToQueue(floorNum)
 
-    const elevatorNum = identifyClosestFreeElevator(floorNum)
-    if(elevatorNum == null){
-      //addToQueue
+    //doesn't update !!!!!!!!!!
+    let elevatorNum = identifyClosestFreeElevator(floorNum)
+    if (elevatorNum == null) {
+      pushToQueue(floorNum)
       return
     }
+
+    setCallsCounter(callsCounter => callsCounter + 1)
     updateFloorNumOFElevator(elevatorNum, floorNum)
     updateElevatorOccupation(elevatorNum, true)
   }
+
+  /*
+  useEffect(() => {
+    console.log("callsCounter changed:", callsCounter)
+
+    /*
+    if(queueInterval != null && callsQueue.length === 0){
+      console.log("callsQueue is empty")
+      clearInterval(queueInterval)
+    }
+    
+    
+  }, [callsCounter])
+  */
+
+  useEffect(() => {
+    var queueInterval = null
+
+    function tryToCallAvailableElevator(){
+      if(callsCounter < numOfElevators) {
+        if(callsQueue.length === 1){
+          console.log("CLEAR INTERVAL")
+          clearInterval(queueInterval)
+        }
+
+        const queueFloor = shiftFromQueue()
+        
+        onCall(queueFloor)
+      }
+    }
+
+    if (callsQueue.length > 0) {
+      queueInterval = setInterval(() => {
+        tryToCallAvailableElevator()
+      }, 5000)
+
+      //console.log("outside of setInterval")
+    }
+
+    //console.log("callsQueue.length:", callsQueue.length)
+    /*
+    if(queueInterval != null && callsQueue.length === 0){
+      console.log("!!!!!!!!!!!!!!!!!!!!")
+      clearInterval(queueInterval)
+    }
+    */
+    
+  }, [callsQueue, callsCounter])
+
 
   return (
     <div>
@@ -75,8 +129,8 @@ function App() {
       </div>
 
       <ElevatorsForm
-      onChangeNumOfFloors={(newNumOfFloors) => setNumOfFloors(newNumOfFloors)}
-      onChangeNumOfElevators={() => {}}/>
+        onChangeNumOfFloors={(newNumOfFloors) => setNumOfFloors(newNumOfFloors)}
+        onChangeNumOfElevators={() => { }} />
     </div>
   );
 }

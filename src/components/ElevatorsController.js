@@ -9,7 +9,6 @@ const ElevatorsController = ({ numOfFloors, onFloorChosen, btnsClassNames }) => 
 
   function handleFloorChosen(floorChosen){
     if(isElevatorStatusDefault(floorChosen)){
-      console.log("Status: default")
       onFloorChosen(floorChosen)
     }
   }

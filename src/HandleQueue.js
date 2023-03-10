@@ -3,17 +3,20 @@ import { useState } from "react";
 const HandleQueue = () => {
     const [callsQueue, setCallsQueue] = useState([])
 
-    function addToQueue(floorNum){
-        console.log("Queoe:", [...callsQueue, floorNum])
+    function pushToQueue(floorNum){
+        console.log("Queue:", [...callsQueue, floorNum])
         setCallsQueue([...callsQueue, floorNum])
       }
     
-      function removeFromQueue(){
-        console.log(callsQueue.slice(1))
-        setCallsQueue(callsQueue.slice(1))
+      function shiftFromQueue(){
+        const newQueue = [...callsQueue]
+        const firstItem = newQueue.shift()
+        console.log("Queue:", newQueue)
+        setCallsQueue(newQueue)
+        return firstItem
       }
 
-    return { addToQueue, removeFromQueue }
+    return { callsQueue, pushToQueue, shiftFromQueue }
 } 
 
 export default HandleQueue

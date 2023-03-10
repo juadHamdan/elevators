@@ -4,7 +4,7 @@ import useSound from 'use-sound';
 import { ReactComponent as ElevatorIcon } from './sources/elevator-icon.svg'
 import ElevatorPingSound from './sources/elevator-ping.mp3'
 
-import {initialElevatorsFloor, floorHeightInPx, elevatorTravelSpeedPerFloorInSec} from '../constants'
+import {initialElevatorsFloor, floorHeightInPx, elevatorTravelSpeedPerFloorInSec} from '../../constants'
 
 const ElevatorStatusColor = {
     Arrived: "#66bb6a",
@@ -97,13 +97,6 @@ const Elevator = ({
                     setElevetorIconColor(ElevatorStatusColor.Default)
                 }, timeoutOnArrival)
             }, Math.abs(floorsToTravel) * (elevatorTravelSpeedPerFloorInSec * 1000))
-        }
-        else{
-            handleElevatorArrival(desiredFloor)
-
-            setTimeout(() => {
-                setElevetorIconColor(ElevatorStatusColor.Default)
-            }, timeoutOnArrival)
         }
     }, [desiredFloor])
 

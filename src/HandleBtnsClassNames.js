@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ElevatorStatuses, ElevatorBtnClassNames } from './constants'
+import { ElevatorStatuses, ElevatorBtnClassNames, initialNumOfFloors } from './constants'
 
 /** Represents buttons class names
  * btnsClassNames = [class name of first button, ...]
  * */
-const initialBtnsClassNames = [...Array(10).fill(ElevatorBtnClassNames.Default)]
+const initialBtnsClassNames = [...Array(initialNumOfFloors).fill(ElevatorBtnClassNames.Default)]
 
 const HandleBtnsClassNames = () => {
     const [btnsClassNames, setBtnsClassNames] = useState(initialBtnsClassNames)
