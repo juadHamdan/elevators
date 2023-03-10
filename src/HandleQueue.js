@@ -5,15 +5,14 @@ const HandleQueue = () => {
 
     function pushToQueue(floorNum){
         console.log("Queue:", [...callsQueue, floorNum])
-        setCallsQueue([...callsQueue, floorNum])
+        setCallsQueue(callsQueue => [...callsQueue, floorNum])
       }
     
       function shiftFromQueue(){
-        const newQueue = [...callsQueue]
-        const firstItem = newQueue.shift()
-        console.log("Queue:", newQueue)
-        setCallsQueue(newQueue)
-        return firstItem
+        console.log("Queue:", callsQueue)
+        //setCallsQueue(newQueue)
+        setCallsQueue(callsQueue => callsQueue.splice(0, 1))
+        return callsQueue[0]
       }
 
     return { callsQueue, pushToQueue, shiftFromQueue }

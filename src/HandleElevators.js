@@ -35,7 +35,6 @@ const HandleElevators = () => {
 
     function identifyClosestFreeElevator(floorNum) {
         const freeElevators = elevators.filter(elevatorData => elevatorData.isOccupied === false)
-        freeElevators.forEach(freeElevator => console.log(freeElevator.isOccupied))
         if (!freeElevators) {
             return null
         }
@@ -50,7 +49,7 @@ const HandleElevators = () => {
         return closestElevatorNum
     }
 
-    return { getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator }
+    return { elevators, getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator }
 }
 
 export default HandleElevators

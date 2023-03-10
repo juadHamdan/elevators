@@ -1,5 +1,5 @@
 export const initialNumOfFloors = 10
-export const initialNumOfElevators = 1
+export const initialNumOfElevators = 5
 export const ARRIVAL_TIMEOUT = 2000
 export const elevatorTravelSpeedPerFloorInSec = 2.5
 export const initialElevatorsFloor = 0

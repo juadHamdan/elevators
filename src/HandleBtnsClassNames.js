@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ElevatorStatuses, ElevatorBtnClassNames, initialNumOfFloors } from './constants'
+import { ElevatorStatuses, ElevatorBtnClassNames, initialNumOfFloors, ARRIVAL_TIMEOUT } from './constants'
 
 /** Represents buttons class names
  * btnsClassNames = [class name of first button, ...]
@@ -21,12 +21,15 @@ const HandleBtnsClassNames = () => {
                 break
             default:
                 className = ElevatorBtnClassNames.Default
-                break
         }
 
-        const newBtnsClassNames = [...btnsClassNames]
-        newBtnsClassNames[btnIndex] = className
-        setBtnsClassNames(newBtnsClassNames)
+        //const newBtnsClassNames = [...btnsClassNames]
+        //newBtnsClassNames[btnIndex] = className
+        //setBtnsClassNames(newBtnsClassNames)
+
+        setBtnsClassNames(btnsClassNames => btnsClassNames.map((btnClassName, index) => {
+            return index === btnIndex ? className : btnClassName 
+        }))
     }
 
     return { btnsClassNames, setBtnClassName }

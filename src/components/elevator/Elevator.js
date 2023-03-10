@@ -64,6 +64,7 @@ const Elevator = ({
         setTravelHeight(getTravelHeight(floorsToTravel))
         setTravelDuration(getTransitionDurationInSec(floorsToTravel))
         setElevetorIconColor(ElevatorStatusColor.Traveling)
+
         onTraveling(desiredFloor)
     }
 
