@@ -1,6 +1,6 @@
 ## Added Features:
 
-✦ User can change number of floors and elevators
+✦ User can change the number of floors and elevators<br/>
 ✦ Floor size and elevator's travel speed are customizble via the ./src/constants.js file
 
 ### Usage
