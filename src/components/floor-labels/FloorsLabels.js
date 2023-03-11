@@ -1,4 +1,5 @@
 import './floors-labels.css'
+import {gapBetweenfloorLabelsPx} from '../../constants'
 
 const FloorsLabels = ({ numOfFloors }) => {
 
@@ -14,7 +15,7 @@ const FloorsLabels = ({ numOfFloors }) => {
   }
 
   return (
-    <div className="floors-labels">
+    <div className="floors-labels" style={{gap: `${gapBetweenfloorLabelsPx}px`}}>
       {[...Array(numOfFloors).keys()].reverse().map(floorNum =>
         <h3 key={floorNum} className="floor-label">{getElevatorLabel(floorNum)}</h3>
       )}

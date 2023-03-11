@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { initialNumOfElevators } from "./constants";
+import { useState, useEffect } from "react";
+import { initialNumOfElevators, initialElevatorsFloor } from "./constants";
 
 class ElevatorData {
     constructor(elevatorNum, floorNum) {
@@ -11,11 +11,26 @@ class ElevatorData {
 
 const initialElevators = []
 for (let i = 0; i < initialNumOfElevators; i++) {
-    initialElevators.push(new ElevatorData(i, 0))
+    initialElevators.push(new ElevatorData(i, initialElevatorsFloor))
 }
 
 const HandleElevators = () => {
     const [elevators, setElevators] = useState(initialElevators)
+
+    function resetElevators(){
+        setElevators(elevators => elevators.map(elevatorData => {
+            return { ...elevatorData, floorNum: initialElevatorsFloor, isOccupied: false }
+        }))
+    }
+
+    function changeNumOfElevators(newNumOfElevators){
+        const newElevators = []
+        for (let i = 0; i < newNumOfElevators; i++) {
+            newElevators.push(new ElevatorData(i, initialElevatorsFloor))
+        }
+        console.log(newElevators)
+        setElevators(newElevators)
+    }
 
     function isSomeElevatorInFloor(floorNum){
         let isInFloor = false
@@ -36,7 +51,7 @@ const HandleElevators = () => {
     }
 
     function getFloorNumOfElevator(elevatorIndex){
-        return elevators[elevatorIndex].floorNum
+        return elevators[elevatorIndex]?.floorNum || initialElevatorsFloor
     }
 
     function updateFloorNumOFElevator(elevatorIndex, floorNum) {
@@ -61,7 +76,7 @@ const HandleElevators = () => {
         return closestElevatorNum
     }
 
-    return { elevators, getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator, isSomeElevatorInFloor }
+    return { resetElevators, changeNumOfElevators, getFloorNumOfElevator, updateElevatorOccupation, updateFloorNumOFElevator, identifyClosestFreeElevator, isSomeElevatorInFloor }
 }
 
 export default HandleElevators

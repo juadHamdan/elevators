@@ -1,50 +1,52 @@
-.elevators-controller {
+#elevators-controller {
     display: flex;
     flex-direction: column;
-    gap: 46px;
     padding: 0 30px;
 }
 
-.elevators-controller .btn {
+#elevators-controller .btn {
     box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.15rem;
     font-weight: bold;
-    height: 30px;
+    height: 35px;
     width: 90px;
-    border-radius: 5px;
+    border-radius: 3px;
     border: none;
     font-family: "Calibri", sans-serif;
 }
+#elevators-controller .btn:focus{
+    outline: none;
+}
 
 
-.btn-default {
+#elevators-controller .btn-default {
     color: #f5f5f5;
     background-color: #66bb6a;
 }
-.btn-default:hover{
+#elevators-controller .btn-default:hover{
     cursor: pointer;
     filter: brightness(85%);
 }
-.btn-default::after {
+#elevators-controller .btn-default::after {
     content: 'Call';
 }
 
-.btn-disabled {
+#elevators-controller .btn-traveling {
     color: #f5f5f5;
     background-color: #f44336;
 }
-.btn-disabled::after {
+#elevators-controller .btn-traveling::after {
     content: 'Waiting';
 }
 
-.btn-active {
+#elevators-controller .btn-arrived {
     color: #66bb6a;
     background-color: #f5f5f5;
-    border: 1px solid #66bb6a;
+    border: 2px solid #66bb6a;
 }
-.btn-active::after {
+#elevators-controller .btn-arrived::after {
     content: 'Arrived';
 }

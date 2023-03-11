@@ -4,7 +4,7 @@ import useSound from 'use-sound';
 import { ReactComponent as ElevatorIcon } from './sources/elevator-icon.svg'
 import ElevatorPingSound from './sources/elevator-ping.mp3'
 
-import {initialElevatorsFloor, floorHeightInPx, elevatorTravelSpeedPerFloorInSec, ElevatorStatusColors} from '../../constants'
+import {initialElevatorsFloor, floorHeightPx, elevatorTravelSpeedPerFloorSec, ElevatorStatusColors} from '../../constants'
 
 const Elevator = ({
     numOfFloors,
@@ -23,21 +23,21 @@ const Elevator = ({
     const [playElevatorSound] = useSound(ElevatorPingSound)
 
     const floorStyle = {
-        width: `${(floorHeightInPx * 2 - 5) - 2}px`,
-        height: `${floorHeightInPx - 2}px`,
+        width: `${(floorHeightPx * 2 - 5) - 2}px`,
+        height: `${floorHeightPx - 2}px`,
         border: "1px solid #f5f5f5"
     }
 
     function getTravelHeight(floorsToTravel) {
-        return `${-(floorsToTravel * floorHeightInPx)}px`
+        return `${-(floorsToTravel * floorHeightPx)}px`
     }
 
     function getTimingContainerHeight(desiredFloor) {
-        return `${Math.abs((desiredFloor + 1) * floorHeightInPx) + 10}px`
+        return `${Math.abs((desiredFloor + 1) * floorHeightPx) + 10}px`
     }
 
     function getTransitionDurationInSec(floorsToTravel) {
-        return Math.abs(floorsToTravel * elevatorTravelSpeedPerFloorInSec)
+        return Math.abs(floorsToTravel * elevatorTravelSpeedPerFloorSec)
     }
 
     const timingContainerStyle = {
@@ -92,7 +92,7 @@ const Elevator = ({
                 setTimeout(() => {
                     setElevetorIconColor(ElevatorStatusColors.Default)
                 }, timeoutOnArrival)
-            }, Math.abs(floorsToTravel) * (elevatorTravelSpeedPerFloorInSec * 1000))
+            }, Math.abs(floorsToTravel) * (elevatorTravelSpeedPerFloorSec * 1000))
         }
     }, [desiredFloor])
 
