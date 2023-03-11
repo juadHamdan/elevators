@@ -1,38 +1,22 @@
 import { useState } from "react";
-import { ElevatorStatuses, ElevatorBtnClassNames, initialNumOfFloors, ARRIVAL_TIMEOUT } from './constants'
+import { ElevatorStatuses, initialNumOfFloors } from './constants'
 
-/** Represents buttons class names
- * btnsClassNames = [class name of first button, ...]
- * */
-const initialBtnsClassNames = [...Array(initialNumOfFloors).fill(ElevatorBtnClassNames.Default)]
+const initialBtnsClassNames = [...Array(initialNumOfFloors).fill(ElevatorStatuses.Default)]
 
 const HandleBtnsClassNames = () => {
     const [btnsClassNames, setBtnsClassNames] = useState(initialBtnsClassNames)
 
-    function setBtnClassName(btnIndex, ElevatorStatus) {
-        let className = ""
+    function changeNumOfBtnsClassNames(newNumOfFloors){
+        setBtnsClassNames([...Array(newNumOfFloors).fill(ElevatorStatuses.Default)])
+    }
 
-        switch (ElevatorStatus) {
-            case ElevatorStatuses.Arrived:
-                className = ElevatorBtnClassNames.Arrived
-                break
-            case ElevatorStatuses.Traveling:
-                className = ElevatorBtnClassNames.Traveling
-                break
-            default:
-                className = ElevatorBtnClassNames.Default
-        }
-
-        //const newBtnsClassNames = [...btnsClassNames]
-        //newBtnsClassNames[btnIndex] = className
-        //setBtnsClassNames(newBtnsClassNames)
-
+    function updateBtnClassName(btnIndex, ElevatorStatus) {
         setBtnsClassNames(btnsClassNames => btnsClassNames.map((btnClassName, index) => {
-            return index === btnIndex ? className : btnClassName 
+            return index === btnIndex ? ElevatorStatus : btnClassName 
         }))
     }
 
-    return { btnsClassNames, setBtnClassName }
+    return { btnsClassNames, updateBtnClassName, changeNumOfBtnsClassNames }
 }
 
 export default HandleBtnsClassNames
