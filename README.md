@@ -4,11 +4,11 @@
 ✦ Floor size and elevator's travel speed are customizble via the ./src/constants.js file
 
 ### Usage
-#### install dependencies
+#### Install dependencies
 ```
-Run: .\elevators\npm i
+> Run: .\elevators\npm i
 ```
 #### Run React dev server (http://localhost:3000)
 ```
-Run: .\elevators\npm start
+> Run: .\elevators\npm start
 ```
